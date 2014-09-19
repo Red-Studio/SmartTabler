@@ -11,9 +11,9 @@ use model\tableUnit;
 class Tabler {
 
     /**
-     * @var string $css
+     * @var string $class
      */
-    private $css = 'smart_tabler';
+    private $class = 'smart_tabler';
 
     /**
      * @var string $name
@@ -71,6 +71,16 @@ class Tabler {
     }
 
     /**
+     * Table css class setter
+     *
+     * @param $name
+     */
+    public function setClass($name)
+    {
+        $this->class = $name;
+    }
+
+    /**
      * Sets the parameters for the future table
      *
      * @param $parameters
@@ -121,20 +131,19 @@ class Tabler {
     public function render()
     {
         if ($this->width) {
-            $startTable = "<table width='" . $this->width . "'>";
+            $startTable = "<table data-name='" . $this->name . "' class='" . $this->class . "' width='" . $this->width . "'>";
         } else {
-            $startTable = '<table>';
+            $startTable = '<table data-name="' . $this->name . '" class="' . $this->class . '">';
         }
 
         $body = "";
-
         if ($this->header) {
-            $body .= "<tr>";
+            $body .= '<tr class="' . $this->class . '_tr">';
             foreach ($this->header as $unit) {
                 /**
                  * @var tableUnit $unit
                  */
-                $body .= "<th>" . $unit->getValue() . "</th>";
+                $body .= '<th class="' . $this->class . '_th">' . $unit->getValue() . '</th>';
             }
             $body .= "</tr>";
         }
@@ -145,15 +154,14 @@ class Tabler {
                  * @var tableUnit $trunit
                  * @var TableUnit $tdunit
                  */
-                $body .= "<tr>";
+                $body .= '<tr class="' . $this->class . '_tr">';
                 foreach ($trunit->getChildren() as $tdunit) {
-                    $body .= "<td>" . $tdunit->getValue() . "</td>";
+                    $body .= '<td class="' . $this->class . '_td">' . $tdunit->getValue() . '</td>';
                 }
-                $body .= "<tr>";
+                $body .= "</tr>";
             }
         }
         $endTable = "</table>";
-
         return $startTable . $body . $endTable;
     }
 
