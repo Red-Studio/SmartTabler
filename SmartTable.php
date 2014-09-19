@@ -5,31 +5,59 @@
 
 namespace core;
 
+require_once("class/Tabler.php");
+require_once("model/tableUnit.php");
+
 use library\Tabler;
 
 class SmartTable {
 
-    private $css = 'smart_tabler';
+    /**
+     * @var Tabler $tabler
+     */
+    private $tabler;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        $tabler = new Tabler();
+        $this->tabler = new Tabler();
     }
 
+    /**
+     * Preparing the table with parameters
+     *
+     * @param $parameters
+     * @throws \Exception
+     */
     public function setParameters($parameters)
     {
-        if (!is_array($parameters)) {
-            return new \Exception("Bad Request", 403);
+        $this->tabler->setParameters($parameters);
+    }
+
+    /**
+     * Renders the table
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return $this->tabler->render();
+    }
+
+    /**
+     * Setting data for the table
+     *
+     * @param $data
+     */
+    public function setData($data)
+    {
+        if (isset($data["headers"])) {
+            $this->tabler->setHeaders($data["headers"]);
         }
-        foreach ($parameters as $parameterName => $parameterValue) {
-            if (!property_exists($this, $parameterName)) {
-                return new \Exception("Bad Request: " . $parameterName . "parameter does not exist.", 403);
-            }
-            if (!method_exists ($this, "set" . $parameterName)) {
-                return new \Exception("Bad Request: " . $parameterName . "parameter setter does not exist.", 403);
-            }
-            $method = 'set' . $parameterName;
-            $this->$method($parameterValue);
+        if (isset($data["body"])) {
+            $this->tabler->setBody($data["body"]);
         }
     }
 } 
